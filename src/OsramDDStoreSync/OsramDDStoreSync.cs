@@ -139,6 +139,7 @@ namespace OsramDDStoreSync
 
         public void OnTimer(object sender, ElapsedEventArgs args)
         {
+            log.Info("--------Start sync--------");
             if(DbVersionIsNewer())
             {
                 try
@@ -154,7 +155,8 @@ namespace OsramDDStoreSync
                     log.Error("Error by sync", e);
                 }
                 
-            } 
+            }
+            log.Info("--------End sync--------");
         }
 
         private bool DbVersionIsNewer()
@@ -212,11 +214,11 @@ namespace OsramDDStoreSync
                         string xmlref = driverData.XmlRef;
                         string format = null;
 
-                        Stream response2 = ddFileApiInstance.GetDdfileByRef(xmlref, format);
-                        FileStream file = new FileStream(driverPath + driverData.XmlRef, FileMode.Create, System.IO.FileAccess.Write);
+                        Stream response = ddFileApiInstance.GetDdfileByRef(xmlref, format);
+                        FileStream file = new FileStream(driverPath + driverData.XmlRef, FileMode.Create, FileAccess.Write);
 
-
-                        response2.CopyTo(file);
+                        response.CopyTo(file);
+                        file.Close();
                         log.Info("New driver data for " + driverData.XmlRef + " written");
                     }
                 }
@@ -234,11 +236,12 @@ namespace OsramDDStoreSync
             {
                 log.Info("Downloading new Family Data");
 
-                Stream response2 = ddFileApiInstance.GetFamiliyFile();
-                FileStream file = new FileStream(familyPath + "Family.xml", FileMode.Create, System.IO.FileAccess.Write);
+                Stream response = ddFileApiInstance.GetFamiliyFile();
+                FileStream file = new FileStream(familyPath + "Family.xml", FileMode.Create, FileAccess.Write);
 
+                response.CopyTo(file);
 
-                response2.CopyTo(file);
+                file.Close();
                 log.Info("New family data written");
    
             }
