@@ -31,8 +31,27 @@ namespace OsramDDStoreSync
         public OsramDDStoreSync()
         {
             log.Info("Init OsramDDStoreSync");
-            InitializeComponent();
+            try
+            {
+                InitializeComponent();
 
+                // init config from App.config
+                InitConfiguration();
+
+                // init api endpoints
+                InitApiEndpoints();
+
+                // init versionFile if not exist
+                InitVersionFile();
+            }
+            catch (Exception e)
+            {
+                log.Error("Error by init service", e);
+            }
+        }
+
+        private void InitConfiguration()
+        {
             try
             {
                 // get driver data path
@@ -56,29 +75,31 @@ namespace OsramDDStoreSync
                 // get timer intervall
                 interval = Int32.Parse(ConfigurationManager.AppSettings.Get("CheckInterval"));
                 log.Info("Interval is set to " + interval + "ms");
-
-                // enable SSL/TLS
-                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-
-                // init API endpoints
-                versionInstance = new VersionApi();
-                ddInfosApiInstance = new DdInfosApi();
-                ddFileApiInstance = new DdFileApi();
-
-                // init versionFile if not exist
-                InitVersionFileIfNotExist();
-
-                //read version file
-                localDbVersion = new Version(File.ReadAllText(versionFilePath));
-                log.Info("LocalDbVersion is set to " + localDbVersion);
             }
-            catch (Exception e)
+            catch(Exception e)
             {
-                log.Error("Error by reading configuration", e);
+                throw new Exception("Error by init configuration", e);
             }
         }
 
-        private void InitVersionFileIfNotExist()
+        private void InitApiEndpoints()
+        {
+            try
+            {
+                // enable SSL/TLS
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
+                versionInstance = new VersionApi();
+                ddInfosApiInstance = new DdInfosApi();
+                ddFileApiInstance = new DdFileApi();
+            }
+            catch(Exception e)
+            {
+                throw new Exception("Error by init api endpoints", e);
+            }
+        }
+
+        private void InitVersionFile()
         {
             if (!File.Exists(versionFilePath))
             {
@@ -93,6 +114,10 @@ namespace OsramDDStoreSync
 
                 File.WriteAllText(versionFilePath, "0.0.0");
             }
+
+            //read version file
+            localDbVersion = new Version(File.ReadAllText(versionFilePath));
+            log.Info("LocalDbVersion is set to " + localDbVersion);
         }
 
         protected override void OnStart(string[] args)
@@ -136,29 +161,29 @@ namespace OsramDDStoreSync
         {
             bool isNewer = false;
 
-            log.Info("Start checking Database Verison");
+            log.Info("Start checking database verison");
 
             try
             {
+                // api returns "1.0.0" but i need 1.0.0
                 string versionString = versionInstance.GetDatabaseVersion().Replace("\"", "");
-                log.Info(versionString);
                 onlineDbVersion = new Version(versionString);
 
                 log.Info("localVersion: " + localDbVersion + "; onlineVersion: " + onlineDbVersion);
 
                 if (onlineDbVersion > localDbVersion)
                 {
-                    log.Info("New Database Version detected");
+                    log.Info("New database version detected: " + onlineDbVersion);
 
                     isNewer = true;
                 }
                 else if (onlineDbVersion < localDbVersion)
                 {
-                    log.Warn("Online Database Version is lower than current local Version");
+                    log.Warn("Online database version is lower than current local version");
                 }
                 else
                 {
-                    log.Info("Online Database Version is equals local one");
+                    log.Info("Online database Version is equals local one");
                 }
             }
             catch(Exception e)
@@ -166,7 +191,7 @@ namespace OsramDDStoreSync
                 log.Error("Error by checking onlineDbVersion", e);
             }
 
-            log.Info("End checking Data Base Verison");
+            log.Info("End checking Database verison");
             return isNewer;
         }
 
