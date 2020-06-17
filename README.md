@@ -8,7 +8,7 @@ Searches every x (is customizable) milliseconds for new driver data xml files. T
 1. Download prefered version from https://github.com/dschoeneborn/OsramDDStoreSync/releases
 2. Copy files from zip to installation directory (e.g. C:\Programm Files(x86)\OsramDDStoreSync\)
 3. Open CMD and navigate to folder
-4. Install the service with `installutil OsramDDStoreSync.exe` or `OsramDDStoreSync.exe --install` or Setup
+4. Install the service with `installutil OsramDDStoreSync.exe` or `OsramDDStoreSync.exe --install` or Setup.exe
 5. Restart your PC or start the service manually
 
 ## Customizing
@@ -39,4 +39,4 @@ Path to the folder where the driver data is located. This is usually `C:\Program
 Path to the folder where the family data is located. This is usually `C:\Program Files (x86)\T4T\Family`.
 
 ### CheckInterval
-The interval at which the service checks fpr updates. Specified in milliseconds.
+The interval at which the service checks for updates. Specified in milliseconds.
