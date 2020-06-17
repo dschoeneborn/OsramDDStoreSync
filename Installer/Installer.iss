@@ -3,8 +3,8 @@
 
 #define MyAppName "OsramDriverDataSync"
 #define MyAppVersion "1.0.1"
-#define MyAppPublisher "TRILUX GmbH & Co. KG"
-#define MyAppURL "https://www.trilux.de/"
+#define MyAppPublisher "Dennis Schöneborn"
+#define MyAppURL ""
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
