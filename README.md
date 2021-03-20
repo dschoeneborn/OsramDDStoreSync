@@ -29,7 +29,7 @@ Defines wheter certain events should be written to a Graylog system.
 ### GraylogHost
 IP or hostname of the Graylog system.
 
-### GraylogHost
+### GraylogPort
 Port of the Graylog input.
 
 ### DriverDataPath
